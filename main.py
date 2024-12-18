@@ -1,5 +1,6 @@
 """Take the numbers and find minimum and maximum"""
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 #FILE NAME
 FILE_NAME = "convolution_pairs_share.txt"
@@ -91,6 +92,13 @@ if(__name__ == "__main__"):
     combinedList = []
     combinedList.append(l1)
     combinedList.append(l2)
-    print("HELLO")
-    plt.boxplot(combinedList)
-    plt.show()
+  #  plt.boxplot(combinedList)
+  #  plt.show()
+    
+    box = go.Figure()
+    box.add_trace(go.Box(y = l1, name = "Image Data"))
+    box.add_trace(go.Box(y = l2, name = "Weights Data"))
+    box.update_layout(
+        xaxis_title = "Categories", yaxis_title = "Values"
+    )
+    box.show()
