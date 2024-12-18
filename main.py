@@ -88,6 +88,9 @@ if(__name__ == "__main__"):
     print(f"Right Average : {right_avg}")   
     print(f"Count : {count}")
     
-    plt.boxplot(l1)
-    plt.boxplot(l2)
+    combinedList = []
+    combinedList.append(l1)
+    combinedList.append(l2)
+    print("HELLO")
+    plt.boxplot(combinedList)
     plt.show()
