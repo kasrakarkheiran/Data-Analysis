@@ -83,7 +83,8 @@ def combine_lists(left : list , right : list) -> list:
 if(__name__ == "__main__"):
     #sum
 
-    file = open(FILE_NAME , "rt")
+    #file = open(FILE_NAME , "rt")
+    file = open("test.txt" , "rt")
     left , right, right_min, right_max, left_min, left_max, left_total_final, right_total_final, count = read_file(file)
     left_avg = float(left_total_final)/ float(count/2)
     right_avg = float(right_total_final) / float(count/2)
@@ -108,7 +109,7 @@ if(__name__ == "__main__"):
     #converts to IEEE format
     bitList = convert.convertTo754(combinedList)
     #writes to file
-    convert.WriteToFile(bitList)
+    convert.test(bitList)
 
     pltList = []
     pltList.append(left)
