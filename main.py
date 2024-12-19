@@ -113,7 +113,7 @@ if(__name__ == "__main__"):
     pltList = []
     pltList.append(left)
     pltList.append(right)
-    print(len(pltList))
+    #print(len(pltList))
     plt.boxplot(pltList)
     plt.show()
 
