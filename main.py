@@ -109,7 +109,7 @@ if(__name__ == "__main__"):
     #converts to IEEE format
     bitList = convert.convertTo754(combinedList)
     #writes to file
-    convert.convertTo754(bitList)
+    convert.WriteToFile(bitList)
 
     pltList = []
     pltList.append(left)

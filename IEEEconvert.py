@@ -36,6 +36,5 @@ def test(combinedList : list[str]):
 if(__name__ == "__main__"):    
     file = open("test.txt" , "rt")
     fileList = file.read()
-
     fileList = convertTo754(fileList)
     print(fileList)
