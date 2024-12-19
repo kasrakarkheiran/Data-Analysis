@@ -47,6 +47,7 @@ def process_buffer(buffer : str, right_min : float, right_max : float, left_min 
     left_list = main_list[:8]
     right_list = main_list[8:]
     
+    #calculate sum, min and max of the array
     for i in range(len(left_list)):
         left_list[i] = float(left_list[i])
         left_total += left_list[i]
@@ -55,7 +56,8 @@ def process_buffer(buffer : str, right_min : float, right_max : float, left_min 
         if(left_list[i] < left_min):
             left_min = left_list[i]
         count += 1
-                
+        
+    #calculate sum, min and max of the array
     for i in range(len(right_list)):
         right_list[i] = float(right_list[i])
         right_total += right_list[i]
