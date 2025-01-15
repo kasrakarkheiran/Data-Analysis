@@ -5,15 +5,28 @@ import struct
 
 
 def ConvertTuple(imageArray):
-    convertedValues = []
+    convertedPixels = []
+    redValues = []
+    greenValues = []
+    blueValues = []
+    imageRGB = [[],[],[]]
     #go into first array
     for image in imageArray:
         #go into height of the image
         for rows in image:
             #go into the pixels of each row
             for pixel in rows:
-                convertedValues.extend(ValueToIEEE(pixel))      
-    return convertedValues
+                convertedPixels = ValueToIEEE(pixel) 
+                print("converted values: ", convertedPixels)
+                redValues = convertedPixels[0]
+                greenValues = convertedPixels[1]
+                blueValues = convertedPixels[2]
+                imageRGB[0].append(redValues)
+                #print("Image RGB", imageRGB[0])
+                imageRGB[1].append(greenValues)
+                imageRGB[2].append(blueValues)
+
+    return imageRGB
 
 
 
@@ -26,12 +39,32 @@ def ValueToIEEE(pixelChannels) -> list[str]:
     return bitList
 
 #write elements to file
-def WriteToFile(outputList : list[str]):
+def WriteToFile(outputList):
     writeFile = open("ImageDataSet/output.txt" , "w")
-    for index , string in enumerate(outputList):
-        writeFile.write(string + " ")
-        if((index + 1) % 9 == 0):
-            writeFile.write("\n")
+    redIndex = 0
+    blueIndex = 0
+    greenIndex = 0
+    while(blueIndex < len(outputList[2])):
+        for i in range(8):
+            writeFile.write(outputList[0][redIndex])
+            writeFile.write(" ")
+            redIndex += 1
+
+        writeFile.write("\n")
+        for i in range(8):
+            writeFile.write(outputList[1][greenIndex])
+            writeFile.write(" ")
+            greenIndex += 1
+        
+        writeFile.write("\n")
+        for i in range(8):
+            writeFile.write(outputList[2][blueIndex])
+            writeFile.write(" ")
+            blueIndex += 1
+        
+        writeFile.write("\n")
+        
+
     return 
 
 if(__name__ == "__main__"):
@@ -41,8 +74,11 @@ if(__name__ == "__main__"):
     print(type(x_train))
     # Check the shapes of the data
     print(f"Training data shape: {x_train.shape}, Training labels shape: {y_train.shape}")
-    print(f"Data of one training data image: {x_train[0][0][0]}")
+    print(f"pixel data : {x_train[0][0][0]}")
     print(f"Test data shape: {x_test.shape}, Test labels shape: {y_test.shape}")
+
+
+
     hexConvert = struct.pack('>f',x_train[0][0][0][0])
     binaryConvert = ''.join(f'{byte:08b}' for byte in hexConvert)
     print(binaryConvert)
@@ -50,6 +86,4 @@ if(__name__ == "__main__"):
     testArray = []
     testArray.append(x_train[0])
     converted = ConvertTuple(testArray)
-    print(converted[0])
-    print(type(converted[0]))
     WriteToFile(converted)
