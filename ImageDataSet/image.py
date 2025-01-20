@@ -16,15 +16,21 @@ def ConvertTuple(imageArray):
         for rows in image:
             #go into the pixels of each row
             for pixel in rows:
+                #Takes pixel list and turn RGB into IEEE
                 convertedPixels = ValueToIEEE(pixel) 
                 print("converted values: ", convertedPixels)
-                redValues = convertedPixels[0]
-                greenValues = convertedPixels[1]
-                blueValues = convertedPixels[2]
-                imageRGB[0].append(redValues)
-                #print("Image RGB", imageRGB[0])
-                imageRGB[1].append(greenValues)
-                imageRGB[2].append(blueValues)
+                #each pixel goes into respective list
+                redValues.append(convertedPixels[0])
+                greenValues.append(convertedPixels[1])
+                blueValues.append(convertedPixels[2])  
+            #lists containing converted values are stored in matrix
+            imageRGB[0].append(redValues)
+            imageRGB[1].append(greenValues)
+            imageRGB[2].append(blueValues)
+            #Temp lists are reset
+            redValues = []
+            greenValues = []
+            blueValues = []        
 
     return imageRGB
 
@@ -41,31 +47,49 @@ def ValueToIEEE(pixelChannels) -> list[str]:
 #write elements to file
 def WriteToFile(outputList):
     writeFile = open("ImageDataSet/output.txt" , "w")
-    redIndex = 0
-    blueIndex = 0
-    greenIndex = 0
-    while(blueIndex < len(outputList[2])):
-        for i in range(8):
-            writeFile.write(outputList[0][redIndex])
-            writeFile.write(" ")
-            redIndex += 1
-
-        writeFile.write("\n")
-        for i in range(8):
-            writeFile.write(outputList[1][greenIndex])
-            writeFile.write(" ")
-            greenIndex += 1
-        
-        writeFile.write("\n")
-        for i in range(8):
-            writeFile.write(outputList[2][blueIndex])
-            writeFile.write(" ")
-            blueIndex += 1
-        
-        writeFile.write("\n")
-        
-
     return 
+
+
+def FormatOutputList(inputList):
+    formattedList = []    
+    #index to keep track of 3*3 list
+    colIndex = 0
+    rowIndex = 0
+    #temp list stores the 3*3 squares of pixels, then that gets stored in formatted list.
+    tempList = []
+    while(rowIndex <= 30 and colIndex <= 30):
+        #formatting the red value 
+        for i in range(0,3):
+            for j in range(0,3):
+                tempList = inputList[0][rowIndex + i][colIndex + j]
+        #putting temp list into formattted list and reseting temp list
+        formattedList.append(tempList)
+        tempList = []
+        #formatting green value
+        for i in range(0,3):
+            for j in range(0,3):
+                tempList = inputList[1][rowIndex + i][colIndex + j]
+        formattedList.append(tempList)
+        tempList = []
+        #formatting blue value
+        for i in range(0,3):
+            for j in range(0,3):
+                tempList = inputList[2][rowIndex + i][colIndex + j]
+        formattedList.append(tempList)
+        tempList = []
+        #if RowIndex has reached 30 and colIndex has reached 30, 
+        # 3 can no longer be added to it as the list is only 32 rows and columns, so it has reached the end lists  
+        if(rowIndex >= 30 and colIndex >= 30):
+            break;
+        #if column is at the end of the row, it will go to the beginning of the row and also go to the next 3 set of rows of the squares
+        if (colIndex >= 30):
+            colIndex = 0
+            rowIndex += 3
+        #if column is not at the end of the row then it goes to the beginning of the next set of squares
+        if colIndex (colIndex < 30):
+            colIndex += 3
+        
+    return formattedList
 
 if(__name__ == "__main__"):
     print("test")
@@ -78,11 +102,6 @@ if(__name__ == "__main__"):
     print(f"Test data shape: {x_test.shape}, Test labels shape: {y_test.shape}")
 
 
-
-    hexConvert = struct.pack('>f',x_train[0][0][0][0])
-    binaryConvert = ''.join(f'{byte:08b}' for byte in hexConvert)
-    print(binaryConvert)
-    print(type(binaryConvert))
     testArray = []
     testArray.append(x_train[0])
     converted = ConvertTuple(testArray)
