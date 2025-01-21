@@ -57,37 +57,36 @@ def FormatOutputList(inputList):
     rowIndex = 0
     #temp list stores the 3*3 squares of pixels, then that gets stored in formatted list.
     tempList = []
-    while(rowIndex <= 30 and colIndex <= 30):
+    tempList1 = []
+    tempList2 = []
+
+    while(rowIndex < 30 and colIndex < 30): #Made Change to be less than not less than equal to 
         #formatting the red value 
         for i in range(0,3):
             for j in range(0,3):
-                tempList = inputList[0][rowIndex + i][colIndex + j]
+                tempList.append(inputList[0][rowIndex + i][colIndex + j]) 
+                tempList1.append(inputList[1][rowIndex + i][colIndex + j])
+                tempList2.append(inputList[2][rowIndex + i][colIndex + j])
         #putting temp list into formattted list and reseting temp list
         formattedList.append(tempList)
+        formattedList.append(tempList1)
+        formattedList.append(tempList2)
         tempList = []
-        #formatting green value
-        for i in range(0,3):
-            for j in range(0,3):
-                tempList = inputList[1][rowIndex + i][colIndex + j]
-        formattedList.append(tempList)
-        tempList = []
-        #formatting blue value
-        for i in range(0,3):
-            for j in range(0,3):
-                tempList = inputList[2][rowIndex + i][colIndex + j]
-        formattedList.append(tempList)
-        tempList = []
+        tempList1 = []
+        tempList2 = []
         #if RowIndex has reached 30 and colIndex has reached 30, 
         # 3 can no longer be added to it as the list is only 32 rows and columns, so it has reached the end lists  
         if(rowIndex >= 30 and colIndex >= 30):
-            break;
+            break
         #if column is at the end of the row, it will go to the beginning of the row and also go to the next 3 set of rows of the squares
+        if (colIndex < 30):
+            colIndex += 3
+
         if (colIndex >= 30):
             colIndex = 0
             rowIndex += 3
         #if column is not at the end of the row then it goes to the beginning of the next set of squares
-        if colIndex (colIndex < 30):
-            colIndex += 3
+
         
     return formattedList
 
@@ -101,9 +100,10 @@ if(__name__ == "__main__"):
     print(f"pixel data : {x_train[0][0][0]}")
     print(f"Test data shape: {x_test.shape}, Test labels shape: {y_test.shape}")
 
-
     testArray = []
     testArray.append(x_train[0])
     converted = ConvertTuple(testArray)
+    finalFormatList = FormatOutputList(converted) #Should be 300 lists : 9r, 9g, 9b, 9r, 9g, 9b...
+
     WriteToFile(converted)
     #x_test.
