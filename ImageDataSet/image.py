@@ -18,7 +18,7 @@ def ConvertTuple(imageArray):
             for pixel in rows:
                 #Takes pixel list and turn RGB into IEEE
                 convertedPixels = ValueToIEEE(pixel) 
-                print("converted values: ", convertedPixels)
+                #print("converted values: ", convertedPixels)
                 #each pixel goes into respective list
                 redValues.append(convertedPixels[0])
                 greenValues.append(convertedPixels[1])
@@ -47,6 +47,29 @@ def ValueToIEEE(pixelChannels) -> list[str]:
 #write elements to file
 def WriteToFile(outputList):
     writeFile = open("ImageDataSet/output.txt" , "w")
+    redRow = 0
+    greenRow = 1
+    blueRow = 2
+    NUM_OF_RGB_ROWS = 3
+    NUM_OF_RGB_COLS = 8
+    MULTIPLYER = 3
+    rgb = [redRow , greenRow , blueRow]
+    #while we have not reached the final row (which is blue rgb values)
+    while(rgb[2] < len(outputList)):
+        #which color we are currently writing: red, blue, or green
+        for rgbRow in range(len(rgb)):
+            #the number of rows we are writing for that color
+            for i in range(0, NUM_OF_RGB_ROWS):
+                #if we have reached the end break the current loop 
+                if(rgb[rgbRow] >= len(outputList)):
+                    break
+                #write 8 values for each line, dropping the final value
+                for j in range(0, NUM_OF_RGB_COLS):
+                    writeFile.write(outputList[rgb[rgbRow]][j])
+                    writeFile.write(" ")
+                rgb[rgbRow] += MULTIPLYER
+                writeFile.write("\n")       
+        #note the final 3 lines ARE IN RGB VALUE meaning line 298 is R, 299 is G and 300 is B
     return 
 
 
@@ -105,5 +128,8 @@ if(__name__ == "__main__"):
     converted = ConvertTuple(testArray)
     finalFormatList = FormatOutputList(converted) #Should be 300 lists : 9r, 9g, 9b, 9r, 9g, 9b...
 
-    WriteToFile(converted)
+    WriteToFile(finalFormatList)
+    #print("num rows: " , len(finalFormatList))
+    
+    #print("num cols: " , len(finalFormatList[0]))
     #x_test.
