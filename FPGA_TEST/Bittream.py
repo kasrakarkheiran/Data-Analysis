@@ -5,7 +5,7 @@ value = 1
 DATA = packed_data = struct.pack("<h", value)
 
 with open('FPGA_TEST/bit.bin', 'wb') as f:
-    for i in range (0,65000):
+    for i in range (0,65536):
         f.write(DATA)
     f.close()   
         
