@@ -61,7 +61,7 @@ def FormatOutputList(inputList):
     tempList2 = []
 
     while(rowIndex < 30 and colIndex < 30): #Made Change to be less than not less than equal to 
-        #formatting the red value 
+        #formatting the red, blue and green value 
         for i in range(0,3):
             for j in range(0,3):
                 tempList.append(inputList[0][rowIndex + i][colIndex + j]) 
