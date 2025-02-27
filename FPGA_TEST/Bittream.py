@@ -1,5 +1,5 @@
 import numpy as np
-RANGE = 128000*8
+RANGE = 128000
 with open('FPGA_TEST/bit.bin', 'wb') as f:
     for i in range(0,RANGE):
         if(i%2 == 0):
