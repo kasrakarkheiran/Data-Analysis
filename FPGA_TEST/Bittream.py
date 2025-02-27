@@ -1,12 +1,11 @@
 import numpy as np
+import struct
 RANGE = 128000
-with open('FPGA_TEST/bit.bin', 'wb') as f:
-    for i in range(0,RANGE):
-        if(i%2 == 0):
-            f.write(int.to_bytes(1))
-        else:
-            f.write(int.to_bytes(0))
-    f.close()
+value = 3060
+DATA = packed_data = struct.pack("<h", value)
 
-        
+with open('FPGA_TEST/bit.bin', 'wb') as f:
+    for i in range (0,64000):
+        f.write(DATA)
+    f.close()   
         
