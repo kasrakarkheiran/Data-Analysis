@@ -4,39 +4,49 @@ import matplotlib.pyplot as plt
 import struct
 print("Amplitude Modulation")
 
-
-
-
-time = 1e-6
 sampling_rate = 2.4e9
-frequency = 100e6
+carrier_frequency = 100e6
 amplitude = 5.0
 secondary_amplitude = 2.5
 samples_per_symbol = 24
-num_samples = int(sampling_rate * time)
-
-
+samples_to_plot = 4 * samples_per_symbol
+amplitude_mod = []
 
 
 try:
-    image = Image.open("D:/DataAnal/Data-Analysis-1/FPGA_TEST/black_white_checkerboard.png")
+    image = Image.open("D:/DataAnalysis/Data-Analysis/FPGA_TEST/black_white_checkerboard.png")
     image = image.convert("RGB")
     print("Image opened successfully.")
     pixels = np.array(image)
     red_pixels = pixels[:, :, 0]
-    new_pixel_values = [[2.5 if pixel == 0 else 5.0 for pixel in row] for row in red_pixels]
+    amplitude_mod = [2.5 if pixel == 0 else 5.0 for row in red_pixels for pixel in row ]
 except FileNotFoundError:
     print("Image file not found. Please check the file path.")
-#time vector
-t = np.linspace(0, time, num_samples, endpoint=False)
 
-#generate sinewave
-carrier_sine_wave = amplitude * np.sin(2 * np.pi * frequency * t)
-print(carrier_sine_wave)
-plt.figure(figsize=(10, 4))
-plt.plot(t, carrier_sine_wave)
-plt.title('Sine Wave')
-plt.xlabel('time (s)')
-plt.ylabel('Amplitude (V)')
-plt.grid(True)
-plt.show()
+
+#time vector for a single symbol modulation
+t_symbol = np.linspace(0, samples_per_symbol/sampling_rate, samples_per_symbol, endpoint=False)
+#wwaveform
+waveform = np.concatenate([amp* np.sin(2*np.pi*carrier_frequency*t_symbol) for amp in amplitude_mod])
+#time vector for the entire waveform
+t_waveform = np.linspace(0, len(waveform)/sampling_rate, len(waveform), endpoint=False)
+#time vector for the limited waveform
+t_limited = np.linspace(0, samples_to_plot/sampling_rate, samples_to_plot, endpoint=False)
+
+
+waveform_scaled = (waveform / 5.0 * 32767).astype(np.int16)
+
+# Save to binary file (little-endian int16)
+with open("modulated_output_int16.bin", "wb") as f:
+    for sample in waveform_scaled:
+        f.write(struct.pack('<h', sample)) 
+
+
+#print(waveform)
+# plt.figure(figsize=(10, 4))
+# plt.plot(t_limited, waveform[:samples_to_plot])
+# plt.title('Sine Wave')
+# plt.xlabel('time (s)')
+# plt.ylabel('Amplitude (V)')
+# plt.grid(True)
+# plt.show()
