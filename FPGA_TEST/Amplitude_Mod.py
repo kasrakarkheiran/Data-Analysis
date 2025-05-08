@@ -16,6 +16,7 @@ amplitude_mod = []
 try:
     image = Image.open("D:/DataAnalysis/Data-Analysis/FPGA_TEST/black_white_checkerboard.png")
     image = image.convert("RGB")
+    width, height = image.size
     print("Image opened successfully.")
     pixels = np.array(image)
     red_pixels = pixels[:, :, 0]
@@ -26,6 +27,7 @@ except FileNotFoundError:
 
 #time vector for a single symbol modulation
 t_symbol = np.linspace(0, samples_per_symbol/sampling_rate, samples_per_symbol, endpoint=False)
+
 #wwaveform
 waveform = np.concatenate([amp* np.sin(2*np.pi*carrier_frequency*t_symbol) for amp in amplitude_mod])
 #time vector for the entire waveform
@@ -34,12 +36,13 @@ t_waveform = np.linspace(0, len(waveform)/sampling_rate, len(waveform), endpoint
 t_limited = np.linspace(0, samples_to_plot/sampling_rate, samples_to_plot, endpoint=False)
 
 
+#voltage ranges from -327mV to 327mV +- some error of around 30mV
 waveform_scaled = (waveform / 5.0 * 32767).astype(np.int16)
-
+print(len(waveform_scaled))
 # Save to binary file (little-endian int16)
-with open("modulated_output_int16.bin", "wb") as f:
-    for sample in waveform_scaled:
-        f.write(struct.pack('<h', sample)) 
+# with open("modulated_output_int16.bin", "wb") as f:
+#     for sample in waveform_scaled:
+#         f.write(struct.pack('<h', sample)) 
 
 
 #print(waveform)
