@@ -34,9 +34,8 @@ height_waveform = height * np.sin(2*np.pi*carrier_frequency*t_symbol)
 #waveform of width
 width_waveform = width * np.sin(2*np.pi*carrier_frequency*t_symbol)
 
-#wwaveform
-waveform = np.array(amplitude_mod)
-#waveform = np.concatenate([amp * np.sin(2 * np.pi * carrier_frequency * t_symbol) for amp in amplitude_mod])
+
+waveform = np.concatenate([amp * np.sin(2 * np.pi * carrier_frequency * t_symbol) for amp in amplitude_mod])
 #total waveform height and width
 # waveform = np.concatenate([height_waveform, width_waveform, waveform])
 #time vector for the entire waveform
@@ -44,12 +43,15 @@ t_waveform = np.linspace(0, len(waveform)/sampling_rate, len(waveform), endpoint
 #time vector for the limited waveform
 t_limited = np.linspace(0, samples_to_plot/sampling_rate, samples_to_plot, endpoint=False)
 
-
+# waveform_two = np.array(waveform_two)
+# waveform_eight = np.array(waveform_eight)
 #voltage ranges from -327mV to 327mV +- some error of around 30mV
 waveform_scaled = (waveform / 5.0 * 32767).astype(np.int16)
+for i in waveform_scaled:
+    print(i)
 print(len(waveform_scaled))
 # Save to binary file (little-endian int16)
-with open("modulated_output_without_sinwave.bin", "wb") as f:
+with open("modulated_output_int16.bin", "wb") as f:
     for sample in waveform_scaled:
         f.write(struct.pack('<h', sample)) 
 
