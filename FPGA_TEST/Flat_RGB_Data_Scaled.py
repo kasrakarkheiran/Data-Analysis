@@ -5,6 +5,11 @@ import struct
 
 
 FILE_PATH = "D:/DataAnalysis/Data-Analysis/FPGA_TEST/black_white_checkerboard.png"
+
+def waveform_test(amplitudes_mod):
+    waveform = np.array(amplitude_mod)
+    return waveform
+
 sampling_rate = 2.4e9
 carrier_frequency = 100e6
 amplitude = 5.0
@@ -29,13 +34,6 @@ except FileNotFoundError:
 waveform = np.array(amplitude_mod)
 waveform_two = []
 waveform_eight = []
-for j in amplitude_mod:
-    for i in range(0,4):
-        waveform_two.append(j)
-
-for j in amplitude_mod:    
-    for i in range(0,8):
-        waveform_eight.append(j)
 
 waveform_scaled = (waveform / 5.0 * 32767).astype(np.int16)
 with open("modulated_output_with_repeats.bin", "wb") as f:
