@@ -5,7 +5,7 @@ import struct
 
 
 FILE_PATH = "D:/DataAnalysis/Data-Analysis/FPGA_TEST/black_white_checkerboard.png"
-OUTPUT_PATH = "D:/DataAnalysis/Data-Analysis/out/128kb_checkerboard.bin"
+OUTPUT_PATH = "D:/DataAnalysis/Data-Analysis/out/key_image.bin"
 SCALE = 30000.0
 def waveform_test(amps):
     waveform = np.array(amps)
@@ -30,13 +30,13 @@ try:
     print("Image opened successfully.")
     pixels = np.array(image)
     red_pixels = pixels[:, :, 0]
-    amplitude_mod = [2.5 if pixel == 0 else 5.0 for row in red_pixels for pixel in row ]
+    amplitude_mod = [2.5 if pixel < 125 else 5.0 for row in red_pixels for pixel in row ]
 except FileNotFoundError:
     print("Image file not found. Please check the file path.")
 
 #wwaveform
-waveform = waveform_test(amplitude_mod)
-
+#waveform = waveform_test(amplitude_mod)
+waveform = np.array(amplitude_mod)
 waveform_scaled = (waveform / 5.0 * SCALE).astype(np.int16)
 with open(OUTPUT_PATH, "wb") as f:
     for sample in waveform_scaled:
