@@ -4,9 +4,11 @@ import matplotlib.pyplot as plt
 import struct
 
 
-FILE_PATH = "D:/DataAnalysis/Data-Analysis/FPGA_TEST/black_white_checkerboard.png"
-OUTPUT_PATH = "D:/DataAnalysis/Data-Analysis/out/key_image.bin"
+FILE_PATH = "D:/DataAnalysis/Data-Analysis/sinewave_rgb_image.png"
+OUTPUT_PATH = "D:/DataAnalysis/Data-Analysis/out/"
 SCALE = 30000.0
+CUTOFF = 130
+CSV_PATH = "D:/DataAnalysis/Data-Analysis/out/"
 def waveform_test(amps):
     waveform = np.array(amps)
     new_waveform = np.zeros(0)
@@ -14,14 +16,13 @@ def waveform_test(amps):
         new_waveform = np.concatenate([new_waveform, waveform])
     return new_waveform
 
-sampling_rate = 2.4e9
-carrier_frequency = 100e6
-amplitude = 5.0
-secondary_amplitude = 2.5
-samples_per_symbol = 24
-samples_to_plot = 4 * samples_per_symbol
-amplitude_mod = []
-
+def scale_waveform(pixel_array):
+    pixel_array = pixel_array.flatten()
+    #Scale all red pixels to negative if < 130 or positive if > 130
+    pixel_array = np.array(pixel_array)
+    pixel_scaled = np.where(pixel_array > CUTOFF, pixel_array * (-SCALE/255.0), pixel_array * (SCALE/255.0))
+    pixel_scaled = pixel_scaled.astype(np.int16)
+    return pixel_scaled
 
 try:
     image = Image.open(FILE_PATH)
@@ -30,17 +31,32 @@ try:
     print("Image opened successfully.")
     pixels = np.array(image)
     red_pixels = pixels[:, :, 0]
-    amplitude_mod = [2.5 if pixel < 125 else 5.0 for row in red_pixels for pixel in row ]
+    green_pixels = pixels[:, :, 1]
+    blue_pixels = pixels[:, :, 2]
 except FileNotFoundError:
     print("Image file not found. Please check the file path.")
 
-#wwaveform
-#waveform = waveform_test(amplitude_mod)
-waveform = np.array(amplitude_mod)
-waveform_scaled = (waveform / 5.0 * SCALE).astype(np.int16)
-with open(OUTPUT_PATH, "wb") as f:
-    for sample in waveform_scaled:
+red_scaled = scale_waveform(red_pixels)
+green_scaled = scale_waveform(green_pixels)
+blue_scaled = scale_waveform(blue_pixels)
+
+#save to bin file
+with open(OUTPUT_PATH + "sin_red.bin", "wb") as f:
+    for sample in red_scaled:
+        f.write(struct.pack('<h', sample))
+
+with open(OUTPUT_PATH + "sin_green.bin", "wb") as f:
+    for sample in green_scaled:
+        f.write(struct.pack('<h', sample))
+
+with open(OUTPUT_PATH + "sin_blue.bin", "wb") as f:
+    for sample in blue_scaled:
         f.write(struct.pack('<h', sample)) 
-print(len(waveform_scaled))
-# for i in waveform_scaled:
-#     print(i)
+
+np.savetxt(CSV_PATH + "sin_red_csv.csv", red_scaled, delimiter=',')
+np.savetxt(CSV_PATH + "sin_green_csv.csv", green_scaled, delimiter=',')
+np.savetxt(CSV_PATH + "sin_blue_csv.csv", blue_scaled, delimiter=',')
+
+print(len(red_pixels))
+print(len(green_pixels))
+print(len(blue_pixels))
