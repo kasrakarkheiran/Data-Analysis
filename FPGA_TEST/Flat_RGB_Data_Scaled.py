@@ -20,7 +20,7 @@ def scale_waveform(pixel_array):
     pixel_array = pixel_array.flatten()
     #Scale all red pixels to negative if < 130 or positive if > 130
     pixel_array = np.array(pixel_array)
-    pixel_scaled = np.where(pixel_array > CUTOFF, pixel_array * (-SCALE/255.0), pixel_array * (SCALE/255.0))
+    pixel_scaled = np.where(pixel_array > CUTOFF, pixel_array * (SCALE/255.0), pixel_array * (-SCALE/255.0))
     pixel_scaled = pixel_scaled.astype(np.int16)
     return pixel_scaled
 
@@ -39,17 +39,19 @@ except FileNotFoundError:
 red_scaled = scale_waveform(red_pixels)
 green_scaled = scale_waveform(green_pixels)
 blue_scaled = scale_waveform(blue_pixels)
+# for i in range(10):
+#     red_multiple = np.concatenate([red_multiple, red_scaled]).astype(np.int16)
 
 #save to bin file
-with open(OUTPUT_PATH + "sin_red.bin", "wb") as f:
+with open(OUTPUT_PATH + "sin_red_negative_values.bin", "wb") as f:
     for sample in red_scaled:
         f.write(struct.pack('<h', sample))
 
-with open(OUTPUT_PATH + "sin_green.bin", "wb") as f:
+with open(OUTPUT_PATH + "sin_green_negative_values.bin", "wb") as f:
     for sample in green_scaled:
         f.write(struct.pack('<h', sample))
 
-with open(OUTPUT_PATH + "sin_blue.bin", "wb") as f:
+with open(OUTPUT_PATH + "sin_blue_negative_values.bin", "wb") as f:
     for sample in blue_scaled:
         f.write(struct.pack('<h', sample)) 
 
