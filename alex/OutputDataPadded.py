@@ -46,21 +46,43 @@ def stretch_waveform(waveform, factor=10):
 def repeat_waveform(waveform, times=3):
     return np.tile(waveform, times)
 
+def repeat_waveform_flipped(waveform):
+    flipped = -1 * waveform
+    return np.concatenate([waveform, flipped])
 
+def zero_center_waveform(waveform):
+    mean_val = np.mean(waveform)
+    return waveform - mean_val
 
 red_scaled = scale_waveform(red_pixels)
 green_scaled = scale_waveform(green_pixels)
 blue_scaled = scale_waveform(blue_pixels)
 
 #stretch each waveform
-red_scaled = stretch_waveform(red_scaled, factor=10)
-green_scaled = stretch_waveform(green_scaled, factor=10)
-blue_scaled = stretch_waveform(blue_scaled, factor=10)
+red_scaled = stretch_waveform(red_scaled, factor=1)
+green_scaled = stretch_waveform(green_scaled, factor=1)
+blue_scaled = stretch_waveform(blue_scaled, factor=1)
 
 #repeat each waveform
-red_scaled = repeat_waveform(red_scaled, times=3)
-green_scaled = repeat_waveform(green_scaled, times=3)
-blue_scaled = repeat_waveform(blue_scaled, times=3)
+red_scaled = repeat_waveform(red_scaled, times=10)
+green_scaled = repeat_waveform(green_scaled, times=10)
+blue_scaled = repeat_waveform(blue_scaled, times=10)
+
+#add flipped waveform
+#repeat and flip each waveform
+#red_scaled = repeat_waveform_flipped(red_scaled)
+#green_scaled = repeat_waveform_flipped(green_scaled)
+#blue_scaled = repeat_waveform_flipped(blue_scaled)
+
+#zero center the waveform
+red_scaled = zero_center_waveform(red_scaled)
+green_scaled = zero_center_waveform(green_scaled)
+blue_scaled = zero_center_waveform(blue_scaled)
+
+#ensure integer format
+red_scaled = red_scaled.astype(np.int16)
+green_scaled = green_scaled.astype(np.int16)
+blue_scaled = blue_scaled.astype(np.int16)
 
 
 #save to bin file
@@ -109,3 +131,13 @@ plt.ylabel("Amplitude")
 
 plt.tight_layout()
 plt.show()
+
+#show average amplitude
+red_avg_amp = np.mean(red_scaled)
+green_avg_amp = np.mean(green_scaled)
+blue_avg_amp = np.mean(blue_scaled)
+
+print("average amplitudes:")
+print(f"R: {red_avg_amp:.2f}")
+print(f"G: {green_avg_amp:.2f}")
+print(f"B: {blue_avg_amp:.2f}")
